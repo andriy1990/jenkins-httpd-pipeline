@@ -7,25 +7,21 @@ pipeline {
         SSH_KEY_ID = "vagrant-key" //
         REMOTE_USER = "vagrant"
     }
+
+
     stages {
-        stage('test_echo') {
+        stage('Install Apache2') {
             steps {
-                echo 'Hello, World!'
+                sshagent (credentials: [env.SSH_KEY_ID]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no -p ${env.REMOTE_PORT} ${env.REMOTE_USER}@${env.REMOTE_HOST} \\
+                    'sudo apt-get update && sudo apt-get install -y apache2'
+                    """
+                }
             }
         }
     }
-
-//     stages {
-//         stage('Install Apache2') {
-//             steps {
-//                 sshagent (credentials: [env.SSH_KEY_ID]) {
-//                     sh """
-//                     ssh -o StrictHostKeyChecking=no -p ${env.REMOTE_PORT} ${env.REMOTE_USER}@${env.REMOTE_HOST} \\
-//                     'sudo apt-get update && sudo apt-get install -y apache2'
-//                     """
-//                 }
-//             }
-//         }
+}
 //
 //         stage('Check Apache Logs') {
 //             steps {
@@ -38,4 +34,4 @@ pipeline {
 //             }
 //         }
 //     }
-}
+// }
