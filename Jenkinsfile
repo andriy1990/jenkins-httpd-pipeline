@@ -1,41 +1,65 @@
 pipeline {
     agent any
+
     stages {
         stage('Install Apache2') {
             steps {
                 sh '''
-                    # Update package list
-                    sudo apt-get update -y
+                sudo apt-get update
+                sudo apt-get install -y apache2
+                '''
+            }
+        }
 
-                    # Install Apache2
-                    sudo apt-get install -y apache2
-
-                    # Start Apache2 service
-                    sudo systemctl start apache2
-
-                    # Enable Apache2 to run on boot
-                    sudo systemctl enable apache2
-
-                    # Verify Apache2 is running
-                    if systemctl is-active --quiet apache2; then
-                        echo "Apache2 is successfully installed and running"
-                    else
-                        echo "Apache2 installation failed or service is not running"
-                        exit 1
-                    fi
+        stage('Check Apache Logs') {
+            steps {
+                sh '''
+                sudo grep -E 'HTTP/1.[01]' /var/log/apache2/access.log | grep -E ' 4[0-9]{2} | 5[0-9]{2} ' || echo 'No 4xx or 5xx errors found'
                 '''
             }
         }
     }
-    post {
-        success {
-            echo 'Apache2 installation completed successfully'
-        }
-        failure {
-            echo 'Apache2 installation failed'
-        }
-    }
 }
+
+
+// pipeline {
+//     agent any
+//     stages {
+//         stage('Install Apache2') {
+//             steps {
+//                 sh '''
+//                     # Update package list
+//                     sudo apt-get update -y
+//
+//                     # Install Apache2
+//                     sudo apt-get install -y apache2
+//
+//                     # Start Apache2 service
+//                     sudo systemctl start apache2
+//
+//                     # Enable Apache2 to run on boot
+//                     sudo systemctl enable apache2
+//
+//                     # Verify Apache2 is running
+//                     if systemctl is-active --quiet apache2; then
+//                         echo "Apache2 is successfully installed and running"
+//                     else
+//                         echo "Apache2 installation failed or service is not running"
+//                         exit 1
+//                     fi
+//                 '''
+//             }
+//         }
+//     }
+//     post {
+//         success {
+//             echo 'Apache2 installation completed successfully'
+//         }
+//         failure {
+//             echo 'Apache2 installation failed'
+//         }
+//     }
+// }
 
 
 // pipeline {
