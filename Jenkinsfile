@@ -20,15 +20,15 @@ pipeline {
             }
         }
 
-        stage('Check Apache Logs') {
-            steps {
-                sshagent (credentials: [env.SSH_KEY_ID]) {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no -p ${env.REMOTE_PORT} ${env.REMOTE_USER}@${env.REMOTE_HOST} \\
-                    "sudo grep -E 'HTTP/1.[01]' /var/log/apache2/access.log | grep -E ' 4[0-9]{2} | 5[0-9]{2} ' || echo 'No 4xx or 5xx errors found'"
-                    """
-                }
-            }
-        }
+//         stage('Check Apache Logs') {
+//             steps {
+//                 sshagent (credentials: [env.SSH_KEY_ID]) {
+//                     sh """
+//                     ssh -o StrictHostKeyChecking=no -p ${env.REMOTE_PORT} ${env.REMOTE_USER}@${env.REMOTE_HOST} \\
+//                     "sudo grep -E 'HTTP/1.[01]' /var/log/apache2/access.log | grep -E ' 4[0-9]{2} | 5[0-9]{2} ' || echo 'No 4xx or 5xx errors found'"
+//                     """
+//                 }
+//             }
+//         }
     }
 }
