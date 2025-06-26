@@ -4,17 +4,17 @@ pipeline {
     environment {
         REMOTE_HOST = "127.0.0.1"
         REMOTE_PORT = "2222"
-        SSH_KEY_ID = "vagrant-key" //
+        SSH_KEY_ID = "vagrant-key" // ID із Jenkins Credentials
         REMOTE_USER = "vagrant"
+        SSH_OPTS = "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
     }
-
 
     stages {
         stage('Install Apache2') {
             steps {
                 sshagent (credentials: [env.SSH_KEY_ID]) {
                     sh """
-                    ssh -o StrictHostKeyChecking=no -p ${env.REMOTE_PORT} ${env.REMOTE_USER}@${env.REMOTE_HOST} \\
+                    ssh ${env.SSH_OPTS} -p ${env.REMOTE_PORT} ${env.REMOTE_USER}@${env.REMOTE_HOST} \\
                     'sudo apt-get update && sudo apt-get install -y apache2'
                     """
                 }
